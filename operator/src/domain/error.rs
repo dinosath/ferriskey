@@ -12,4 +12,10 @@ pub enum OperatorError {
     DeleteApiError { message: String },
     #[error("Invalid specification: {message}")]
     InvalidSpec { message: String },
+    #[error("Realm import error: {message}")]
+    RealmImportError { message: String },
+    #[error("Cluster not found: {message}")]
+    ClusterNotFound { message: String },
+    #[error("Authentication error: {message}")]
+    AuthError { message: String },
 }

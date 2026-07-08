@@ -1,0 +1,182 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ferriskeyrealmimports.ferriskey.rs
+spec:
+  group: ferriskey.rs
+  names:
+    categories: []
+    kind: FerrisKeyRealmImport
+    plural: ferriskeyrealmimports
+    shortNames:
+    - fkri
+    singular: ferriskeyrealmimport
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: The realm name
+      jsonPath: .spec.realm.name
+      name: Realm
+      type: string
+    - description: Is the import ready?
+      jsonPath: .status.ready
+      name: Ready
+      type: boolean
+    - description: Current Phase
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Auto-generated derived type for FerrisKeyRealmImportSpec via `CustomResource`
+        properties:
+          spec:
+            properties:
+              clusterRef:
+                description: Reference to the FerrisKeyCluster to import into
+                properties:
+                  name:
+                    description: Name of the FerrisKeyCluster
+                    type: string
+                required:
+                - name
+                type: object
+              realm:
+                description: Realm configuration to import
+                properties:
+                  name:
+                    description: Name/slug of the realm
+                    type: string
+                  displayName:
+                    description: Human-readable display name for the realm
+                    nullable: true
+                    type: string
+                  enabled:
+                    description: Whether the realm is enabled
+                    type: boolean
+                  realmRoles:
+                    description: Realm-level roles to create
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          nullable: true
+                          type: string
+                        permissions:
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - name
+                      - permissions
+                      type: object
+                    type: array
+                  clients:
+                    description: Client applications to create
+                    items:
+                      properties:
+                        clientId:
+                          type: string
+                        name:
+                          nullable: true
+                          type: string
+                        enabled:
+                          type: boolean
+                        publicClient:
+                          type: boolean
+                        secret:
+                          nullable: true
+                          type: string
+                        protocol:
+                          nullable: true
+                          type: string
+                        redirectUris:
+                          items:
+                            type: string
+                          type: array
+                        clientType:
+                          description: 'Client type: confidential, public, or system'
+                          nullable: true
+                          type: string
+                        directAccessGrantsEnabled:
+                          type: boolean
+                        serviceAccountsEnabled:
+                          type: boolean
+                        roles:
+                          description: Client-level roles
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              description:
+                                nullable: true
+                                type: string
+                              permissions:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - name
+                            - permissions
+                            type: object
+                          type: array
+                      required:
+                      - clientId
+                      - enabled
+                      - publicClient
+                      type: object
+                    type: array
+                required:
+                - name
+                - enabled
+                type: object
+            required:
+            - clusterRef
+            - realm
+            type: object
+          status:
+            nullable: true
+            properties:
+              conditions:
+                items:
+                  properties:
+                    conditionType:
+                      type: string
+                    lastTransitionTime:
+                      type: string
+                    message:
+                      nullable: true
+                      type: string
+                    reason:
+                      nullable: true
+                      type: string
+                    status:
+                      type: string
+                  required:
+                  - conditionType
+                  - lastTransitionTime
+                  - status
+                  type: object
+                nullable: true
+                type: array
+              message:
+                nullable: true
+                type: string
+              phase:
+                nullable: true
+                type: string
+              ready:
+                type: boolean
+            required:
+            - ready
+            type: object
+        required:
+        - spec
+        title: FerrisKeyRealmImport
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
